@@ -35,7 +35,7 @@
    ========================================================================== */
 :root {
   --portrait-fade-start: 78%;   /* where the fade begins (lower number = longer fade) */
-  --portrait-card-fade-start: 50%;   /* where the card's fade begins */
+  --portrait-card-fade-start: 55%;   /* where the card's fade begins */
   --portrait-src: url("assets/portrait\ 02.png");  /* must be the SAME file as the <img> in index.html */
   --portrait-width: 380px;
   --portrait-height: 540px;
