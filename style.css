@@ -522,13 +522,16 @@ body {
 
 
 .project__splash {
-  position: absolute; z-index: 1;                       /* 1 = on top of the screenshot's corner; 0 = behind it */
+  position: absolute; z-index: 1;                         /* 0 = behind the screenshot, 1 = on top of it */
+  top: var(--splash-top, auto);
   left: var(--splash-left, auto);
   right: var(--splash-right, auto);
   bottom: var(--splash-bottom, -15%);
   width: var(--splash-size, 55%); height: auto;
   opacity: var(--splash-fade, 1);
-  mix-blend-mode: multiply;                             /* hides a white background; harmless on a transparent PNG */
+  rotate: var(--splash-rotate, 0deg);
+  scale: var(--splash-flip, 1) 1;                         /* -1 flips it left-to-right */
+  mix-blend-mode: multiply;
   pointer-events: none;
 }
 /* ==========================================================================
@@ -968,3 +971,727 @@ body {
 
 
 }
+/* ==========================================================================
+   DESKTOP ONLY: PROJECTS SECTION (901px and wider), matches the reference
+   Change numbers in the CONTROL PANEL only. The rules below just read them.
+   ========================================================================== */
+@media (min-width: 901px) {
+
+  /* ---------- A. CONTROL PANEL ---------- */
+  .work {
+    /* Split of the row: text column vs picture column (shares, e.g. 39 + 61).
+       For a bigger picture use 32fr / 68fr. */
+    --text-col: 39fr;
+    --media-col: 55fr;
+    --row-gap: 0px;                  /* extra space between rows (0 = rows touch their divider lines) */
+
+    /* Picture panel: its shape and the white space around it */
+    --panel-ratio: 11 / 8;           /* width / height. Bigger second number = taller panel */
+    --panel-margin-y: 70px;          /* white space above AND below the panel */
+    --panel-margin-x: clamp(24px, 4.4vw, 56px);   /* white space between the panel and the frame's side edge */
+    --panel-bg: #F3F6FF;
+
+    /* Text block: space around it, position, spacing */
+    --text-pad-left: clamp(32px, 4.4vw, 56px);          /* normal rows (picture on the right) */
+    --text-pad-left-reverse: clamp(48px, 8.7vw, 112px); /* row 2 (picture on the left) */
+    --text-pad-right: 24px;
+    --text-pad-y: 0px;               /* extra space above and below the text block */
+    --text-align-v: center;          /* flex-start (top) | center | flex-end (bottom) */
+    --text-gap: 60px;                /* space between the text and the button */
+    --text-x: 0px;                   /* nudge the whole text block: negative = left */
+    --text-y: -9px;                   /* negative = up */
+
+    /* Text style */
+    --category-display: block;        /* change to block to show "Web Development" etc. like the reference */
+    --category-size: 1.1rem;
+    --title-size: clamp(2rem, 3.9vw, 3.4rem);
+    --title-weight: 400;
+    --title-tracking: -.02em;
+    --title-leading: 1.1;
+    --desc-display: none;           /* change to none to hide the description, like the reference */
+    --desc-size: 1rem;
+    --desc-width: 22em;
+    --title-desc-gap: 1rem;
+
+    /* Arrow button (pill) */
+    --btn-width: 68px;
+    --btn-height: 46px;
+    --btn-icon: 22px;
+    --btn-x: 0px;                    /* nudge the button */
+    --btn-y: 0px;
+
+    --category-title-gap: 10px;      /* space between "Web Development" and the title. Smaller = closer */
+  }
+
+  /* ---------- B. LAYOUT ---------- */
+  .project { grid-template-columns: minmax(0, var(--text-col)) minmax(0, var(--media-col)); }
+  .project--reverse { grid-template-columns: minmax(0, var(--media-col)) minmax(0, var(--text-col)); }
+  .project + .project { margin-top: var(--row-gap); margin-bottom: var(--row-gap); }
+
+  .project__media {
+  aspect-ratio: var(--panel-ratio);
+  min-height: 0;
+  margin: var(--panel-top, var(--panel-margin-y)) var(--panel-margin-x) var(--panel-bottom, var(--panel-margin-y)) 0;
+}
+.project--reverse .project__media {
+  margin: var(--panel-top, var(--panel-margin-y)) 0 var(--panel-bottom, var(--panel-margin-y)) var(--panel-margin-x);
+}
+
+  /* ---------- D. TEXT ---------- */
+  .project__info {
+    padding: var(--text-pad-y) var(--text-pad-right) var(--text-pad-y) var(--text-pad-left);
+    justify-content: var(--text-align-v);
+    gap: var(--text-gap);
+    translate: var(--text-x) var(--text-y);
+  }
+  .project--reverse .project__info { padding-left: var(--text-pad-left-reverse); }
+
+  .project__category { display: var(--category-display); font-size: var(--category-size); color: #8a8a8a; }
+  .project__category { margin-bottom: calc(var(--category-title-gap) - var(--text-gap)); }
+  .project__title {
+    font-size: var(--title-size); font-weight: var(--title-weight);
+    letter-spacing: var(--title-tracking); line-height: var(--title-leading);
+  }
+  .project__desc {
+    display: var(--desc-display); margin-top: var(--title-desc-gap);
+    max-width: var(--desc-width); font-size: var(--desc-size); color: var(--muted);
+  }
+
+  /* ---------- E. BUTTON ---------- */
+  .project .circle-btn {
+    width: var(--btn-width); height: var(--btn-height);
+    border-radius: 999px; border-width: 1px;
+    translate: var(--btn-x) var(--btn-y);
+  }
+  .project .circle-btn svg { width: var(--btn-icon); height: var(--btn-icon); }
+
+  /* ---------- F. FRAMES (the screenshot inside each panel) ----------
+     --shot-x / --shot-y   position (50% = centre)
+     --shot-width          size, % of the panel (over 100% bleeds off the edges)
+     --shot-ratio          shape of the frame. Set it to match YOUR image's real shape
+     --shot-rotate         tilt
+     --splash-*            the blue splash picture: which corner, how far out, how big   */
+
+  /* Row 1: big tilted shot bleeding off the panel, splash bottom right */
+  .shot-1 {
+    --shot-x: 50%; --shot-y: 64%; --shot-width: 100%; --shot-ratio: 4 / 3;
+    --shot-rotate: 7deg; --shot-scale: .86; --shot-radius: 0px;
+    --splash-left: auto; --splash-right: 0%; --splash-bottom: 0%; --splash-size: 100%;
+  }
+  /* Row 2: artwork fills the whole panel, splash bottom left */
+  .shot-2 {
+    --shot-x: 50%; --shot-y: 60%; --shot-width: 100%; --shot-ratio: 11 / 8;
+    --shot-rotate: -5deg; --shot-scale: .9; --shot-radius: 0px;
+    --splash-left: 0%; --splash-right: auto; --splash-bottom: 0%; --splash-size: 100%;
+  }
+  /* Row 3: smaller screenshot sitting inside the panel, splash bottom right */
+  .shot-3 {
+    --shot-x: 51%; --shot-y: 50%; --shot-width: 79%; --shot-ratio: 17 / 11;
+    --shot-rotate: 0deg; --shot-scale: 1.1; --shot-radius: 0px;
+    --splash-left: auto; --splash-right: 0%; --splash-bottom: 0%; --splash-size: 100%;
+  }
+
+  /* ---------- G. PER-PROJECT TEXT OVERRIDES (optional) ----------
+     Any variable from the control panel works here, for ONE project only. Example:
+     --title-size: 4rem;  --btn-y: 12px;  --text-align-v: flex-start;                */
+  .work .project:nth-of-type(1) { /* Nexa Digital */--panel-top: 20px;       /* space above the picture */
+  --panel-bottom: 65px;    /* space below the picture */ }
+  .work .project:nth-of-type(2) { /* Python Web Scraper */ }
+  .work .project:nth-of-type(3) { /* Responsive Web Interface */ }
+}
+
+
+/* ==========================================================================
+   MOBILE (900px and below): screenshot + splash controls for each project
+   Your layout is not touched. Only these variables are set.
+   ========================================================================== */
+@media (max-width: 900px) {
+  .shot-1 {
+    --panel-ratio: 16 / 11;                  /* shape of the whole panel */
+    --shot-x: 60%; --shot-y: 56%;            /* screenshot position (50% 50% = centre) */
+    --shot-width: 104%; --shot-ratio: 16 / 10;
+    --shot-rotate: -12deg; --shot-scale: 1; --shot-radius: 0px;
+    --splash-top: auto; --splash-bottom: 0%;
+    --splash-left: auto; --splash-right: -5%;
+    --splash-size: 100%; --splash-fade: 1; --splash-rotate: 0deg; --splash-flip: 1;
+  }
+  .shot-2 {
+    --panel-ratio: 16 / 11;
+    --shot-x: 40%; --shot-y: 50%;
+    --shot-width: 100%; --shot-ratio: 16 / 11;
+    --shot-rotate: 8deg; --shot-scale: .88; --shot-radius: 0px;
+    --splash-top: auto; --splash-bottom: 0%;
+    --splash-left: -5%; --splash-right: auto;
+    --splash-size: 100%; --splash-fade: 1; --splash-rotate: 0deg; --splash-flip: 1;
+  }
+  .shot-3 {
+    --panel-ratio: 16 / 10.5;
+    --shot-x: 50%; --shot-y: 50%;
+    --shot-width: 78%; --shot-ratio: 16 / 10;
+    --shot-rotate: 0deg; --shot-scale: 1.1; --shot-radius: 4px;
+    --splash-top: auto; --splash-bottom: 0%;
+    --splash-left: auto; --splash-right: -5%;
+    --splash-size: 100%; --splash-fade: 1; --splash-rotate: 0deg; --splash-flip: 1;
+  }
+}
+
+/* ==========================================================================
+   MOBILE (900px and below): PROJECTS SECTION CONTROLS
+   Change numbers in the CONTROL PANEL. Rules below just read them.
+   ========================================================================== */
+@media (max-width: 900px) {
+
+  /* ---------- A. CONTROL PANEL ---------- */
+  .work {
+    /* Space ABOVE and BELOW each project (change per project further down) */
+    --text-pad-top: 36px;            /* space above the small heading (top of the project) */
+    --panel-bottom: 36px;            /* space below the picture (bottom of the project) */
+    --panel-top: 20px;               /* gap between the button and the picture */
+    --panel-margin-x: 0px;           /* space left and right of the picture (0 = full width) */
+    --row-gap: 0px;                  /* extra space between projects (0 = just the divider lines) */
+
+    /* Text block */
+    --text-pad-x: var(--pad-x);      /* space left and right of the text */
+    --text-gap: 30px;                /* space between the text and the button */
+    --text-x: 0px;                   /* nudge the whole text block */
+    --text-y: 0px;
+
+    /* Text style */
+    --category-display: block;       /* "Web Development" etc. (block = show, none = hide) */
+    --category-size: .95rem;
+    --category-title-gap: 5px;      /* space between the small heading and the title */
+    --title-size: clamp(1.7rem, 6.2vw, 2.4rem);
+    --title-weight: 500;
+    --title-tracking: -.02em;
+    --title-leading: 1.15;
+    --desc-display: none;            /* description hidden on phones. block = bring it back */
+    --desc-size: .95rem;
+    --title-desc-gap: .8rem;
+
+    /* Button (pill, like the desktop one) */
+    --btn-width: 50px;
+    --btn-height: 35px;
+    --btn-icon: 18px;
+    --btn-x: 0px;                    /* nudge the button */
+    --btn-y: 0px;
+  }
+
+  /* ---------- B. LAYOUT: one column, text first, then the picture ---------- */
+  .project, .project--reverse { grid-template-columns: minmax(0, 1fr); }
+  .project--reverse .project__info, .project--reverse .project__media { order: 0; }
+  .project + .project { margin-top: var(--row-gap); margin-bottom: var(--row-gap); }
+
+  /* ---------- C. TEXT ---------- */
+  .project__info {
+    padding: var(--text-pad-top) var(--text-pad-x) 0;
+    justify-content: flex-start;
+    gap: var(--text-gap);
+    translate: var(--text-x) var(--text-y);
+  }
+  .project__category {
+    display: var(--category-display); font-size: var(--category-size);
+    margin-bottom: calc(var(--category-title-gap) - var(--text-gap));   /* makes the number above the real distance */
+  }
+  .project__title {
+    font-size: var(--title-size); font-weight: var(--title-weight);
+    letter-spacing: var(--title-tracking); line-height: var(--title-leading);
+  }
+  .project__desc { display: var(--desc-display); margin-top: var(--title-desc-gap); font-size: var(--desc-size); }
+
+  /* ---------- D. BUTTON ---------- */
+  .project .circle-btn {
+    width: var(--btn-width); height: var(--btn-height);
+    border-radius: 999px; border-width: 1px;
+    translate: var(--btn-x) var(--btn-y);
+  }
+  .project .circle-btn svg { width: var(--btn-icon); height: var(--btn-icon); }
+
+  /* ---------- E. PICTURE PANEL ---------- */
+  .project__media {
+    margin: var(--panel-top) var(--panel-margin-x) var(--panel-bottom);
+  }
+
+  /* ---------- F. PER-PROJECT OVERRIDES: separate space above and below each project ----------
+     Any variable from the control panel works here, for ONE project only.            */
+  .work .project:nth-of-type(1) {            /* Nexa Digital */
+    --text-pad-top: 20px;                    /* space above project 1 */
+    --panel-bottom: 36px;                    /* space below project 1 */
+  }
+  .work .project:nth-of-type(2) {            /* Python Web Scraper */
+    --text-pad-top: 43px;
+    --panel-bottom: 36px;
+  }
+  .work .project:nth-of-type(3) {            /* Responsive Web Interface */
+    --text-pad-top: 43px;
+    --panel-bottom: 36px;
+  }
+}
+
+/* ==========================================================================
+   SERVICE CARDS: matched to the reference, desktop AND mobile
+   HOW IT WORKS: each card is a "container", so every number below is a
+   PERCENT OF THE CARD'S WIDTH. The card then keeps the same proportions at
+   any size. Edit the numbers in the CONTROL PANEL only.
+   Reference measurements: card 313 x 400 px, so 1 unit is about 3.1px at that size.
+   ========================================================================== */
+
+/* ---------- A. CONTROL PANEL ---------- */
+.services {
+  --sc-ratio: 313 / 400;        /* card shape (width / height). A bigger 2nd number = taller card */
+  --sc-radius: 28px;            /* corner roundness */
+  --sc-gap: 28px;               /* space between cards (desktop) */
+  --sc-section-top: 40px;       /* space between the heading row and the cards */
+  --sc-section-bottom: 80px;    /* space under the cards */
+
+  /* Space inside the card */
+  --sc-pad-top: 13.7;           /* above the icon */
+  --sc-pad-x: 11.8;             /* left and right */
+  --sc-pad-bottom: 4.5;         /* below the button */
+
+    /* Icon */
+  --sc-icon-size: 26;           /* TIP: icon box size. Bigger number = bigger icon (was 19.8) */
+  --sc-icon-pad: 0;             /* TIP: space inside the box around the PNG. 0 = PNG fills the box (was 3.8) */
+  --sc-icon-gap: 5;             /* TIP: space UNDER the icon, between icon and title. Bigger = more space */
+  --sc-icon-x: -3;              /* TIP: nudge left/right. Negative = left, positive = right */
+  --sc-icon-y: -4;               /* TIP: nudge up/down. Negative = up, positive = down. Does not move the text */
+
+  /* Text */
+  --sc-title-size: 7.6;
+  --sc-title-width: 58;         /* max title width. Smaller = the title wraps to 2 lines sooner */
+  --sc-title-gap: 6.4;          /* title to description */
+  --sc-desc-size: 4.6;
+  --sc-desc-opacity: .62;       /* lower = lighter description */
+  --sc-desc-list-gap: 9.9;      /* description to list */
+
+  /* List */
+  --sc-list-size: 4.9;
+  --sc-list-gap: 3.2;           /* space between list items */
+  --sc-check-size: 4.2;
+  --sc-check-gap: 2.6;          /* space between the tick and the text */
+  --sc-list-btn-gap: 2;         /* minimum space between the list and the button */
+
+  /* Arrow button */
+  --sc-btn-size: 11.5;
+  --sc-btn-icon: 4.5;
+  --sc-btn-right: 4.8;          /* distance from the card's right edge */
+}
+
+/* ---------- B. GRID ---------- */
+.services__grid {
+  gap: var(--sc-gap);
+  padding-top: var(--sc-section-top);
+  padding-bottom: var(--sc-section-bottom);
+}
+/* Desktop: three cards in a row */
+@media (min-width: 901px) {
+  .services__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .services__grid > :last-child { grid-column: auto; }
+}
+/* Mobile and tablet: one centred column, cards capped so they never get huge */
+@media (max-width: 900px) {
+  .services { --sc-gap: 18px; --sc-section-top: 24px; --sc-section-bottom: 48px; }
+  .services__grid { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .services__grid > :last-child { grid-column: auto; }
+  .service-card { width: 100%; max-width: 420px; }
+}
+
+/* ---------- C. CARD ---------- */
+.service-card {
+  container-type: inline-size;            /* makes "cqw" mean 1% of THIS card's width */
+  aspect-ratio: var(--sc-ratio);
+  border-radius: var(--sc-radius);
+  /* % padding is a % of the card's own width, so it matches the cqw numbers below */
+  padding: calc(var(--sc-pad-top) * 1%) calc(var(--sc-pad-x) * 1%) calc(var(--sc-pad-bottom) * 1%);
+}
+
+.service-card__icon {
+  width: calc(var(--sc-icon-size) * 1cqw); height: calc(var(--sc-icon-size) * 1cqw);
+  padding: calc(var(--sc-icon-pad) * 1cqw);
+  margin-bottom: calc(var(--sc-icon-gap) * 1cqw);
+  border-radius: 5cqw; box-sizing: border-box; flex: none;
+  /* TIP: moves the icon visually only, so the title below stays where it is */
+  translate: calc(var(--sc-icon-x) * 1cqw) calc(var(--sc-icon-y) * 1cqw);
+}
+
+
+/* Title: reserves two lines so the descriptions and lists line up across all cards */
+.service-card__title {
+  font-size: calc(var(--sc-title-size) * 1cqw); font-weight: 400; line-height: 1.2; letter-spacing: -.01em;
+  max-width: calc(var(--sc-title-width) * 1cqw); min-height: 2.4em; text-wrap: balance;
+}
+.service-card__desc {
+  margin-top: calc(var(--sc-title-gap) * 1cqw);
+  font-size: calc(var(--sc-desc-size) * 1cqw); line-height: 1.45; opacity: var(--sc-desc-opacity);
+}
+
+/* List */
+.service-card__list {
+  display: flex; flex-direction: column;
+  gap: calc(var(--sc-list-gap) * 1cqw);
+  margin: calc(var(--sc-desc-list-gap) * 1cqw) 0 calc(var(--sc-list-btn-gap) * 1cqw);
+  font-size: calc(var(--sc-list-size) * 1cqw); font-weight: 400; line-height: 1.35;
+}
+.service-card__list li { gap: calc(var(--sc-check-gap) * 1cqw); }
+.service-card__list svg { width: calc(var(--sc-check-size) * 1cqw); height: calc(var(--sc-check-size) * 1cqw); margin-top: .2em; }
+.service-card--secondary .service-card__list svg,
+.service-card--pale .service-card__list svg { color: var(--ink); }          /* dark ticks on the light cards */
+
+/* Arrow button: white circle, blue arrow, tucked into the bottom-right corner */
+.service-card .circle-btn {
+  width: calc(var(--sc-btn-size) * 1cqw); height: calc(var(--sc-btn-size) * 1cqw);
+  margin-top: auto; align-self: flex-end;
+  margin-right: calc((var(--sc-btn-right) - var(--sc-pad-x)) * 1cqw);   /* pulls it past the card padding */
+  background: #fff; color: var(--blue); border-color: transparent;
+}
+.service-card .circle-btn svg { width: calc(var(--sc-btn-icon) * 1cqw); height: calc(var(--sc-btn-icon) * 1cqw); }
+.service-card:hover .circle-btn,
+.service-card--primary:hover .circle-btn { background: var(--ink); color: #fff; border-color: transparent; }
+
+/* ==========================================================================
+   SERVICE CARD ICONS AS PNG
+   ========================================================================== */
+
+/* TIP: "contain" keeps the whole PNG visible inside the icon box without stretching it.
+   Use "cover" only if you want it to fill the box and get cropped. */
+.service-card__icon {
+  object-fit: contain;
+  display: block;
+}
+
+/* TIP: PNGs ignore "color:", so the old white-icon rule no longer works.
+   This filter turns a dark or blue PNG white on the blue card.
+   DELETE this rule if you already have a white version of the icon for card 1. */
+.service-card--primary .service-card__icon {
+  filter: brightness(0) invert(1);
+}
+
+/* TIP: to change the lighter tile behind the first icon, edit the rgba() value on
+   .service-card--primary .service-card__icon (around line 1312).
+   To get the same tile on all three cards, add this: */
+/* .service-card__icon { background: rgba(47, 91, 255, .10); } */
+
+/* ==========================================================================
+   PNG ARROW BESIDE THE "EXPLORE MY TOP CREATIONS" HEADING
+   ========================================================================== */
+.work .section-head--band {
+  /* TIP: change these numbers, save, refresh */
+  --arrow-w: 6rem;        /* arrow width. Bigger = bigger arrow */
+  --arrow-h: 5rem;        /* arrow height (the box the PNG sits in) */
+  --arrow-x: 0px;         /* nudge left/right. Negative = left, positive = right */
+  --arrow-y: 0px;         /* nudge up/down. Negative = up, positive = down */
+  --arrow-gap: .5rem;     /* space between the word "Creations" and the arrow */
+}
+
+.work .doodle-arrow--img {
+  width: var(--arrow-w);
+  height: var(--arrow-h);
+  margin-left: var(--arrow-gap);
+  object-fit: contain;    /* TIP: keeps the whole PNG visible without stretching it */
+  translate: var(--arrow-x) var(--arrow-y);   /* moves the arrow only, not the heading text */
+}
+
+/* TIP: smaller arrow on phones. Change the numbers to taste */
+@media (max-width: 560px) {
+  .work .section-head--band { --arrow-w: 4rem; --arrow-h: 3.5rem; }
+}
+
+/* ==========================================================================
+   PNG ARROW BESIDE THE "SEE MY CLIENT FEEDBACK" HEADING
+   ========================================================================== */
+.feedback .section-head {
+  /* TIP: change these numbers, save, refresh */
+  --arrow-w: 6rem;        /* arrow width. Bigger = bigger arrow */
+  --arrow-h: 5rem;        /* arrow height (the box the PNG sits in) */
+  --arrow-x: 0px;         /* nudge left/right. Negative = left, positive = right */
+  --arrow-y: 0px;         /* nudge up/down. Negative = up, positive = down */
+  --arrow-gap: .5rem;     /* space between the word "Feedback" and the arrow */
+}
+
+.feedback .doodle-arrow--img {
+  width: var(--arrow-w);
+  height: var(--arrow-h);
+  margin-left: var(--arrow-gap);
+  object-fit: contain;    /* TIP: keeps the whole PNG visible without stretching it */
+  translate: var(--arrow-x) var(--arrow-y);   /* moves the arrow only, not the heading text */
+
+  /* TIP: this section is blue, so the arrow must be white.
+     This filter turns a black PNG white. DELETE this line if your PNG is already white. */
+  filter: brightness(0) invert(1);
+}
+
+/* TIP: smaller arrow on phones. Change the numbers to taste */
+@media (max-width: 560px) {
+  .feedback .section-head { --arrow-w: 4rem; --arrow-h: 3.5rem; }
+}
+
+/* ==========================================================================
+   CLIENT FEEDBACK: SWIPE CAROUSEL (900px and below)
+   Cards sit in one row, you swipe sideways, and the next card peeks in.
+   Desktop (901px and wider) is not touched.
+   ========================================================================== */
+@media (max-width: 900px) {
+
+  /* ---------- A. CONTROL PANEL: change a number, save, refresh ---------- */
+  .feedback .testimonials {
+    --fb-card-w: min(84%, 420px);   /* TIP: card width. Smaller % = a bigger peek of the next card */
+    --fb-gap: 14px;                 /* space between cards */
+    --fb-pad: 20px;                 /* space inside each card */
+    --fb-text: 1.05rem;             /* quote text size (was 1.5rem) */
+    --fb-text-leading: 1.55;        /* quote line spacing (was 1.6) */
+    --fb-icon: 28px;                /* quote mark size (was 36px) */
+    --fb-inner-gap: 12px;           /* space between quote mark, text and name row (was 18px) */
+    --fb-bottom: 28px;              /* space under the cards */
+  }
+
+  /* ---------- B. THE SWIPE ROW ---------- */
+  .feedback .testimonials {
+    display: flex;                              /* replaces the grid, so cards sit side by side */
+    gap: var(--fb-gap);
+    overflow-x: auto;                           /* lets the row scroll sideways */
+    scroll-snap-type: x mandatory;              /* TIP: each swipe settles on a card. Change to "proximity" for a looser feel */
+    scroll-padding-inline: var(--pad-x);        /* keeps the snapped card lined up with your page padding */
+    overscroll-behavior-x: contain;             /* stops the whole page from swiping back by accident */
+    padding: 10px var(--pad-x) var(--fb-bottom);
+    scrollbar-width: none;                      /* hide the scrollbar (Firefox) */
+  }
+  .feedback .testimonials::-webkit-scrollbar { display: none; }   /* hide the scrollbar (Chrome, Safari) */
+
+  /* ---------- C. THE CARDS ---------- */
+  .feedback .testimonial {
+    flex: 0 0 var(--fb-card-w);                 /* fixed width, never shrinks, so the next card peeks in */
+    scroll-snap-align: start;
+    padding: var(--fb-pad);
+    gap: var(--fb-inner-gap);
+  }
+  .feedback .testimonial__icon { width: var(--fb-icon); height: var(--fb-icon); }
+  .feedback .testimonial__text { font-size: var(--fb-text); line-height: var(--fb-text-leading); }
+  .feedback .testimonial__footer { padding-top: 4px; }
+  .feedback .avatar { width: 34px; height: 34px; }
+
+  /* TIP: the page reveal animation would keep the peeking card invisible, because it is
+     barely on screen. This shows both cards at once. */
+  .js-ready .feedback .testimonials .testimonial.reveal { opacity: 1; translate: 0 0; }
+
+  /* TIP: hover lift is clipped inside a scrolling row and is meaningless on touch. */
+  .feedback .testimonial:hover { transform: none; }
+}
+
+/* ==========================================================================
+   SERVICES: SWIPE + LOOP (900px and below)
+   Only turns the stacked cards into a sideways row. Card size, text and
+   spacing stay exactly as they are now. Desktop is not touched.
+   ========================================================================== */
+@media (max-width: 900px) {
+  .services .services__grid {
+    /* TIP: keeps the cards centred, same as the old single column (cards max out at 420px) */
+    --sv-side: max(var(--pad-x), calc((100% - 420px) / 2));
+
+    display: flex;                       /* cards sit side by side instead of stacked */
+    align-items: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;       /* TIP: each swipe settles on a card */
+    overscroll-behavior-x: contain;
+    padding-left: var(--sv-side);
+    padding-right: var(--sv-side);
+    scroll-padding-inline: var(--sv-side);
+    scrollbar-width: none;
+  }
+  .services .services__grid::-webkit-scrollbar { display: none; }
+
+  .services .service-card {
+    flex: 0 0 auto;                      /* keeps each card's current width, never shrinks */
+    scroll-snap-align: start;
+  }
+}
+
+/* ==========================================================================
+   BACK TO TOP BUTTON (bottom right, all screen sizes)
+   Soft fade + rise when it appears, gentle lift and arrow nudge on hover.
+   ========================================================================== */
+.to-top {
+  /* ---------- CONTROL PANEL: change a number, save, refresh ---------- */
+  --tt-size: 48px;              /* button size */
+  --tt-right: 28px;             /* distance from the right edge */
+  --tt-bottom: 28px;            /* distance from the bottom edge */
+  --tt-icon: 20px;              /* arrow size */
+  --tt-bg: var(--white);        /* button colour (your site's white) */
+  --tt-fg: var(--ink);          /* arrow colour (black) */
+  --tt-border: var(--border);   /* TIP: thin grey outline so it shows on white sections */
+  --tt-bg-hover: var(--ink);    /* colour on hover (matches your circle buttons) */
+  --tt-fg-hover: #fff;          /* arrow colour on hover */
+  --tt-rise: 18px;              /* how far it travels up while appearing */
+  --tt-speed: .55s;             /* appear/disappear speed. Bigger = slower and softer */
+
+  position: fixed; z-index: 40;
+  right: calc(var(--tt-right) + env(safe-area-inset-right, 0px));
+  bottom: calc(var(--tt-bottom) + env(safe-area-inset-bottom, 0px));
+  display: grid; place-items: center;
+  width: var(--tt-size); height: var(--tt-size);
+    padding: 0; border: 1px solid var(--tt-border); border-radius: 50%;
+  background: var(--tt-bg); color: var(--tt-fg); cursor: pointer;
+  /* TIP: soft neutral shadow. Raise the last number (.18) for a stronger lift */
+  box-shadow: 0 10px 24px -12px rgba(9, 9, 9, .18);
+
+  /* hidden state */
+  opacity: 0; visibility: hidden; pointer-events: none;
+  translate: 0 var(--tt-rise);          /* "translate" is used for the entrance, "transform" for hover, so they never clash */
+  scale: .85;
+  transition:
+    opacity var(--tt-speed) ease,
+    translate var(--tt-speed) cubic-bezier(.22, 1, .36, 1),
+    scale var(--tt-speed) cubic-bezier(.22, 1, .36, 1),
+    visibility 0s linear var(--tt-speed),   /* hide it from keyboard/screen readers only after it fades out */
+    background-color .3s ease, color .3s ease, border-color .3s ease, transform .3s ease, box-shadow .3s ease;
+}
+.to-top.is-shown {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  translate: 0 0; scale: 1;
+  transition-delay: 0s;
+}
+.to-top svg {
+  width: var(--tt-icon); height: var(--tt-icon);
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+}
+
+/* Hover: lifts a little, the arrow glides up */
+.to-top:hover { background: var(--tt-bg-hover); color: var(--tt-fg-hover); border-color: var(--tt-bg-hover); transform: translateY(-4px); box-shadow: 0 16px 28px -12px rgba(9, 9, 9, .4); }
+.to-top:hover svg { transform: translateY(-2px); }
+.to-top:active { transform: translateY(-1px) scale(.95); }    /* soft press */
+
+/* Phones and tablets: a little smaller and closer to the corner */
+@media (max-width: 900px) {
+  .to-top { --tt-size: 44px; --tt-right: 18px; --tt-bottom: 20px; --tt-icon: 18px; }
+}
+
+/* ==========================================================================
+   LOGO STRIP: looping names with a star between them (inside the blue Feedback section)
+   Desktop first. The 900px-and-below sizes are at the end of this block.
+   ========================================================================== */
+.logo-strip {
+  /* ---------- CONTROL PANEL: change a number, save, refresh ---------- */
+  --lg-size: 4rem;          /* TIP: name size. Bigger = bigger names */
+  --lg-gap: 50px;           /* space between a name and the star on each side */
+  --lg-star: 16px;          /* star size */
+  --lg-dim: .3;             /* how faded the "logo--dim" names are (0 = invisible, 1 = solid white) */
+  --lg-speed: 32s;          /* time for one full loop. Bigger = slower */
+  --lg-top: 0px;           /* space above the strip (below the review cards) */
+  --lg-bottom: 50px;        /* space below the strip */
+
+  position: relative; overflow: hidden;
+  padding: var(--lg-top) 0 var(--lg-bottom);
+}
+
+/* The moving row: two identical groups side by side, slid left by exactly one group */
+.logo-strip__track {
+  display: flex; width: max-content;
+  animation: logo-marquee var(--lg-speed) linear infinite;
+}
+.logo-strip:hover .logo-strip__track { animation-play-state: paused; }   /* TIP: delete this rule if you don't want pause-on-hover */
+@keyframes logo-marquee { to { transform: translateX(-50%); } }
+
+.logo-strip__group {
+  display: flex; align-items: center; flex: none;
+  gap: var(--lg-gap); padding-right: var(--lg-gap);   /* the padding keeps spacing even where group 1 meets group 2 */
+  margin: 0; padding-left: 0; list-style: none;
+}
+
+/* ---------- THE NAMES ---------- */
+.logo {
+  color: #fff; font-size: var(--lg-size); line-height: 1.1; white-space: nowrap;
+}
+.logo--dim { opacity: var(--lg-dim); }
+
+/* TIP: each style matches one name in the reference. Rename or reuse them freely. */
+.logo--sans   { font-family: var(--font-sans); font-weight: 500; letter-spacing: -.02em; }
+.logo--serif  { font-family: 'Playfair Display', Georgia, serif; font-weight: 500; letter-spacing: -.02em; }
+.logo--tech   { font-family: 'Michroma', var(--font-sans); font-size: calc(var(--lg-size) * .72); letter-spacing: -.01em; }  /* Michroma is wide, so it is scaled down */
+.logo--script { font-family: 'Yellowtail', cursive; font-size: calc(var(--lg-size) * 1.15); letter-spacing: 0; }
+
+/* ---------- THE STAR ---------- */
+.logo-star { display: grid; place-items: center; flex: none; color: #fff; }
+.logo-star svg { width: var(--lg-star); height: var(--lg-star); }
+
+/* ---------- 900px AND BELOW: comfortable size for phones and tablets ---------- */
+@media (max-width: 900px) {
+  .logo-strip {
+    --lg-size: 2.2rem;      /* TIP: raise to 2.6rem for bigger names on phones */
+    --lg-gap: 26px;
+    --lg-star: 12px;
+    --lg-speed: 24s;        /* shorter row, so a shorter loop keeps the same pace */
+    --lg-top: 2px;
+    --lg-bottom: 30px;
+  }
+}
+
+/* ---------- LESS MOTION: no scrolling, names wrap and sit centred ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .logo-strip__track { width: 100%; justify-content: center; }
+  .logo-strip__group { flex-wrap: wrap; justify-content: center; row-gap: 16px; padding-inline: 16px; }
+  .logo-strip__group[aria-hidden="true"] { display: none; }
+  .logo-star { display: none; }
+}
+
+/* ==========================================================================
+   CLIENT FEEDBACK: MATCH THE REFERENCE
+   Cards, quote mark, outlined button, no dotted pattern.
+   SIZES live inside min-width: 901px, so the 900px-and-below carousel sizes are untouched.
+   ========================================================================== */
+
+/* ---------- 1. REMOVE THE WHITE DOTTED PATTERN (desktop + mobile) ---------- */
+/* TIP: delete this one rule to bring the pattern back */
+.feedback__grain { display: none; }
+
+/* ---------- 2. CARD LOOK (all screen sizes) ---------- */
+.feedback .testimonial {
+  --tm-radius: 32px;                         /* TIP: corner roundness (reference is very round) */
+  --tm-bg: rgba(255, 255, 255, .08);         /* TIP: card tint. Raise .08 for a lighter card */
+  border-radius: var(--tm-radius);
+  background: var(--tm-bg);
+}
+.feedback .testimonial__text { font-weight: 300; letter-spacing: 0; opacity: 1; }   /* light, fully white text */
+.feedback .testimonial__name { font-weight: 400; }
+.feedback .testimonial__role { opacity: .55; }                                      /* softer job title */
+
+/* Smaller corners on phones and tablets, in proportion to the smaller cards */
+@media (max-width: 900px) {
+  .feedback .testimonial { --tm-radius: 22px; }
+}
+
+/* ---------- 3. CARD SIZES (desktop only, 901px and wider) ---------- */
+@media (min-width: 901px) {
+  .feedback .testimonials { gap: 36px; }                       /* TIP: space between the two cards */
+
+  .feedback .testimonial {
+    padding: 48px 54px;                                        /* TIP: space inside the card (top/bottom, left/right) */
+    gap: 30px;                                                 /* space between quote mark, text and name row */
+  }
+  .feedback .testimonial__icon { width: 44px; height: 36px; }   /* quote mark size */
+  .feedback .testimonial__text { font-size: 1.6rem; line-height: 1.5; }   /* TIP: 1.5rem = smaller text, 1.75rem = bigger */
+  .feedback .testimonial__footer { padding-top: 16px; }
+  .feedback .testimonial__name { font-size: 1.05rem; }
+  .feedback .testimonial__role { font-size: .85rem; }
+  .feedback .avatar { width: 46px; height: 46px; }
+
+  /* TIP: hover = gentle lift + clearly lighter tint, like before */
+  .feedback .testimonial:hover {
+    transform: translateY(-4px);              /* TIP: 0 = no lift. Raise to -6px for a bigger lift */
+    background: rgba(255, 255, 255, .16);     /* TIP: raise .16 for a stronger tint */
+  }
+}
+
+/* ---------- 4. THE BUTTON: outlined, like the reference "Explore All" ---------- */
+.feedback .section-head > a.btn--white {
+  min-height: 46px;
+  padding: 0 1.4rem;
+  gap: .8rem;
+  background: transparent;                   /* no white fill */
+  color: #fff;
+  border: 1px solid #fff;                    /* thin white outline */
+  border-radius: 2px;                        /* TIP: nearly square. Raise to 4px for a softer corner */
+  font-size: 1rem;                           /* TIP: bigger text than the old small button */
+  font-weight: 400;
+}
+.feedback .section-head > a.btn--white .btn__icon { width: 1.05rem; height: 1.05rem; }
+
+/* Hover: fills white with a blue label (the arrow still nudges up-right) */
+.feedback .section-head > a.btn--white:hover { background: #fff; color: var(--blue); }

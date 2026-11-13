@@ -32,7 +32,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-
+<!-- TIP: Playfair Display = "Qmij" style, Michroma = "Microsoft" style, Yellowtail = script name -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@500&family=Michroma&family=Yellowtail&display=swap" rel="stylesheet" />
   <!-- EXTERNAL ASSET 2: Tailwind via CDN (pinned version).
        LIMITATION: the CDN builds styles inside the visitor's browser on every visit.
        That is perfect for learning, but slower and not recommended for production.
@@ -69,12 +70,15 @@
        ====================================================================== -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <!-- TIP: thinner copy of the arrow, used only by the Feedback button. Lower stroke-width (1.3) for a finer line -->
+<symbol id="i-arrow-thin" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-sparkle" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0C12 7 17 12 24 12C17 12 12 17 12 24C12 17 7 12 0 12C7 12 12 7 12 0Z"/></symbol>
     <symbol id="i-code" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6M14 4l-4 16"/></g></symbol>
     <symbol id="i-bug" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 2 1.9 1.9M16 2l-1.9 1.9M9 7.1V6a3 3 0 0 1 6 0v1.1M12 20a6 6 0 0 1-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3a6 6 0 0 1-6 6ZM12 20v-9M6 13H2M18 13h4M6 17l-3 2M18 17l3 2M6 9 3 7M18 9l3-2"/></g></symbol>
     <symbol id="i-terminal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-6-6-6M12 19h8"/></g></symbol>
-    <symbol id="i-quote" viewBox="0 0 24 24"><path fill="currentColor" d="M6 17h3l2-4V7H5v6h3l-2 4zm8 0h3l2-4V7h-6v6h3l-2 4z"/></symbol>
+    <!-- TIP: two straight tapered marks like the reference. Edit the numbers in "d" to change the shape -->
+<symbol id="i-quote" viewBox="0 0 44 36"><path fill="currentColor" d="M4 0H21L11 36H2.5ZM27 0H44L34 36H25.5Z"/></symbol>
     <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></g></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></g></symbol>
     <!-- Hand-drawn curved arrow used next to section headings -->
@@ -278,54 +282,47 @@
         <div class="services__grid">
 
           <article class="service-card service-card--primary reveal">
-            <svg class="service-card__icon" aria-hidden="true"><use href="#i-code" /></svg>
-            <h3 class="service-card__title">Website Development</h3>
-            <p class="service-card__desc">Modern, responsive websites designed around your goals and your brand.</p>
-            <ul class="service-card__list">
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Frontend Development</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>HTML, CSS &amp; JavaScript</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Responsive Web Design</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Personal Portfolio Websites</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Landing Page Development</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Tailwind CSS</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>UI Implementation</li>
-            </ul>
-            <!-- The arrow link is "stretched" over the whole card (see .circle-btn::after in CSS) -->
-            <a class="circle-btn" href="#contact" aria-label="Discuss Website Development"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
-          </article>
+  <!-- PASTE -->
+<!-- TIP: change the file name here if your PNG is called something else -->
+<img class="service-card__icon" src="assets/icon-code (1).png" alt="" aria-hidden="true" width="80" height="80" loading="lazy" />
+  <h3 class="service-card__title">Website Development</h3>
+  <p class="service-card__desc">I’m an expert in web development</p>
+  <ul class="service-card__list">
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Frontend Development</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>HTML, CSS &amp; JavaScript</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Responsive Web Design</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Landing Page Development</li>
+  </ul>
+  <a class="circle-btn" href="#contact" aria-label="Discuss Website Development"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
+</article>
 
-          <article class="service-card service-card--secondary reveal" style="--reveal-delay:80ms">
-            <svg class="service-card__icon" aria-hidden="true"><use href="#i-bug" /></svg>
-            <h3 class="service-card__title">Website Bug Fixes</h3>
-            <p class="service-card__desc">Fix existing website issues, repair broken layouts, and improve functionality.</p>
-            <ul class="service-card__list">
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>HTML/CSS Bug Fixes</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>JavaScript Debugging</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Responsive Layout Fixes</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Broken UI Repair</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Cross-Browser Issues</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Website Error Fixes</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>CSS Styling Problems</li>
-            </ul>
-            <a class="circle-btn" href="#contact" aria-label="Discuss Website Bug Fixes"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
-          </article>
+<article class="service-card service-card--secondary reveal" style="--reveal-delay:80ms">
+  <img class="service-card__icon" src="assets/icon-bug (4).png" alt="" aria-hidden="true" width="80" height="80" loading="lazy" />
 
-          <article class="service-card service-card--pale reveal" style="--reveal-delay:160ms">
-            <svg class="service-card__icon" aria-hidden="true"><use href="#i-terminal" /></svg>
-            <h3 class="service-card__title">Python Automation</h3>
-            <p class="service-card__desc">Automate repetitive tasks and collect web data with practical Python scripts.</p>
-            <ul class="service-card__list">
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Python Scripting</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Task Automation</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Web Scraping</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Data Extraction</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>Data Cleaning</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>CSV and Excel Automation</li>
-              <li><svg aria-hidden="true"><use href="#i-check" /></svg>API Integration</li>
-            </ul>
-            <a class="circle-btn" href="#contact" aria-label="Discuss Python Automation"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
-          </article>
+  <h3 class="service-card__title">Website Bug Fixes</h3>
+  <p class="service-card__desc">I’m an expert in fixing web bugs</p>
+  <ul class="service-card__list">
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>HTML/CSS Bug Fixes</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>JavaScript Debugging</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Responsive Layout Fixes</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Cross-Browser Issues</li>
+  </ul>
+  <a class="circle-btn" href="#contact" aria-label="Discuss Website Bug Fixes"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
+</article>
 
+<article class="service-card service-card--pale reveal" style="--reveal-delay:160ms">
+  <img class="service-card__icon" src="assets/icon-terminal.png" alt="" aria-hidden="true" width="80" height="80" loading="lazy" />
+
+  <h3 class="service-card__title">Python Automation</h3>
+  <p class="service-card__desc">I’m an expert in Python scripting</p>
+  <ul class="service-card__list">
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Python Scripting</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Task Automation</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Web Scraping</li>
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>Data Extraction</li>
+  </ul>
+  <a class="circle-btn" href="#contact" aria-label="Discuss Python Automation"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
+</article>
         </div>
       </section>
 
@@ -341,7 +338,7 @@
       <section id="work" class="work" aria-labelledby="work-title">
         <div class="section-head section-head--band">
           <h2 id="work-title" class="section-title">Explore My Top <br> Creations
-            <svg class="doodle-arrow" aria-hidden="true"><use href="#i-doodle-arrow" /></svg>
+            <img class="doodle-arrow doodle-arrow--img" src="assets/arrow-black.png" alt="" aria-hidden="true" width="200" height="130" />
           </h2>
           <a class="btn btn--blue btn--sm" href="#contact">Hire Me
             <svg class="btn__icon" aria-hidden="true"><use href="#i-arrow" /></svg>
@@ -362,7 +359,7 @@
             <a class="circle-btn" href="#" data-placeholder aria-label="View Nexa Digital project (link placeholder)"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
           </div>
           <div class="project__media shot-1">
-            <img class="project__splash" src="assets/left.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="project__splash" src="assets/left-tall (1).png" alt="" aria-hidden="true" loading="lazy" />
             <div class="project__frame">
               <!-- Use the SAME URL as this project's arrow button -->
               <a class="project__shot-link" href="#" data-placeholder target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
@@ -385,7 +382,7 @@
             <a class="circle-btn" href="#" data-placeholder aria-label="View Python Web Scraper project (link placeholder)"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
           </div>
           <div class="project__media shot-2">
-            <img class="project__splash" src="assets/right.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="project__splash" src="assets/right-tall (1).png" alt="" aria-hidden="true" loading="lazy" />
             <div class="project__frame">
               <!-- Use the SAME URL as this project's arrow button -->
               <a class="project__shot-link" href="#" data-placeholder target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
@@ -409,7 +406,7 @@
             <a class="circle-btn" href="#" data-placeholder aria-label="View Responsive Web Interface project (link placeholder)"><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
           </div>
           <div class="project__media shot-3">
-            <img class="project__splash" src="assets/left.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="project__splash" src="assets/left-tall (1).png" alt="" aria-hidden="true" loading="lazy" />
             <div class="project__frame">
               <!-- Use the SAME URL as this project's arrow button -->
               <a class="project__shot-link" href="#" data-placeholder target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
@@ -430,10 +427,10 @@
 
         <div class="section-head">
           <h2 id="feedback-title" class="section-title">See My Client <br> Feedback
-            <svg class="doodle-arrow" aria-hidden="true"><use href="#i-doodle-arrow" /></svg>
+            <img class="doodle-arrow doodle-arrow--img" src="assets/arrow-white.png" alt="" aria-hidden="true" width="200" height="130" />
           </h2>
           <a class="btn btn--white btn--sm" href="#contact">Let's Talk
-            <svg class="btn__icon" aria-hidden="true"><use href="#i-arrow" /></svg>
+            <svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-thin" /></svg>
           </a>
         </div>
 
@@ -462,6 +459,46 @@
               <img class="avatar" src="assets/c2.png" alt="Daniel Carter" width="38" height="38" />
             </figcaption>
           </figure>
+
+          
+        </div>
+
+        <!-- ================= LOGO STRIP (looping marquee) =================
+             TIP: edit the names right in the text. The second group is an exact copy that makes
+             the loop seamless, so whenever you change group 1, make the same change in group 2.
+             Add the class "logo--dim" to any name you want faded. -->
+        <div class="logo-strip" role="group" aria-label="Companies I have worked with">
+          <div class="logo-strip__track">
+
+            <!-- GROUP 1 -->
+            <ul class="logo-strip__group">
+              <li class="logo logo--sans">Camilo</li>
+              <li class="logo-star" aria-hidden="true"><svg><use href="#i-sparkle" /></svg></li>
+              <li class="logo logo--serif logo--dim">Qmij</li>
+              <li class="logo-star" aria-hidden="true"><svg><use href="#i-sparkle" /></svg></li>
+              <li class="logo logo--sans">Portal</li>
+              <li class="logo-star" aria-hidden="true"><svg><use href="#i-sparkle" /></svg></li>
+              <li class="logo logo--tech logo--dim">Microsoft</li>
+              <li class="logo-star" aria-hidden="true"><svg><use href="#i-sparkle" /></svg></li>
+              <li class="logo logo--script">Djuna</li>
+              <li class="logo-star" aria-hidden="true"><svg><use href="#i-sparkle" /></svg></li>
+            </ul>
+
+            <!-- GROUP 2: exact copy of group 1 (hidden from screen readers) -->
+            <ul class="logo-strip__group" aria-hidden="true">
+              <li class="logo logo--sans">Camilo</li>
+              <li class="logo-star"><svg><use href="#i-sparkle" /></svg></li>
+              <li class="logo logo--serif logo--dim">Qmij</li>
+              <li class="logo-star"><svg><use href="#i-sparkle" /></svg></li>
+              <li class="logo logo--sans">Portal</li>
+              <li class="logo-star"><svg><use href="#i-sparkle" /></svg></li>
+              <li class="logo logo--tech logo--dim">Microsoft</li>
+              <li class="logo-star"><svg><use href="#i-sparkle" /></svg></li>
+              <li class="logo logo--script">Djuna</li>
+              <li class="logo-star"><svg><use href="#i-sparkle" /></svg></li>
+            </ul>
+
+          </div>
         </div>
       </section>
 
@@ -586,6 +623,14 @@
       <a href="#home">Back to top ↑</a>
     </nav>
   </footer>
+
+    <!-- ================= BACK TO TOP BUTTON =================
+       TIP: script.js adds the class "is-shown" when it's time to show it. -->
+  <button id="back-to-top" class="to-top" type="button" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  </button>
 
   <!-- "defer" = download now, run after the page is parsed, so every element exists when the script runs. -->
   <script src="script.js" defer></script>

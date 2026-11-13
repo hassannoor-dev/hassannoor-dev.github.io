@@ -451,6 +451,143 @@ window.addEventListener('resize', positionContactDetails);
 
 
 /* --------------------------------------------------------------------------
+   11. LOOPING CARD CAROUSELS (phones/tablets, 900px and below)
+   One reusable function. Cards are cloned before and after the real ones; when
+   the visitor stops swiping on a clone, we silently jump to the identical real
+   card, so the row never runs out. Above 900px the clones are removed.
+   TIP: to loop another row of cards, add one more call at the bottom of this block.
+   -------------------------------------------------------------------------- */
+function initLoopCarousel(trackSelector, cardSelector) {
+  const track = document.querySelector(trackSelector);
+  if (!track) return;
+
+  // TIP: keep this breakpoint the same as the carousel media queries in style.css
+  const mq = window.matchMedia('(max-width: 900px)');
+  // TIP: how long after the swipe stops before we jump back (milliseconds)
+  const IDLE_MS = 120;
+
+  let originals = [];
+  let timer = null;
+  let touching = false;
+
+  // Where the real cards start, and how wide one full set of cards is (cards + gaps)
+  function geometry() {
+    const first = originals[0];
+    const afterFirst = track.querySelector('[data-clone="after"]');
+    const padLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+    return { start: first.offsetLeft - padLeft, set: afterFirst.offsetLeft - first.offsetLeft };
+  }
+
+  // If we stopped on a clone, jump by exactly one set so we land on the same-looking real card
+  function recenter() {
+    if (!originals.length || touching) return;   // never jump while a finger is down
+    const { start, set } = geometry();
+    const x = track.scrollLeft;
+    let next = null;
+    if (x >= start + set - 2) next = x - set;    // on the "after" clones, so jump back
+    else if (x < start - 2) next = x + set;      // on the "before" clones, so jump forward
+    if (next === null) return;
+
+    track.style.scrollSnapType = 'none';         // pause snapping so the jump is instant
+    track.scrollLeft = next;
+    void track.offsetWidth;                      // force the browser to apply the jump now
+    track.style.scrollSnapType = '';             // snapping back on (the CSS value returns)
+  }
+
+  function enable() {
+    if (originals.length) return;
+    originals = Array.from(track.querySelectorAll(cardSelector));
+    if (originals.length < 2) { originals = []; return; }   // nothing to loop with one card
+        // TIP: show the real cards right away. Otherwise a card you haven't scrolled to yet is
+    // still invisible when the loop jumps back to it, and it would flash in.
+    originals.forEach((card) => card.classList.add('is-visible'));
+
+    const makeClones = (where) => originals.map((card) => {
+      const clone = card.cloneNode(true);
+      clone.classList.remove('reveal', 'is-visible');   // clones skip the fade-in animation
+      clone.removeAttribute('style');
+      clone.setAttribute('aria-hidden', 'true');        // screen readers read each card once
+      // TIP: links/buttons inside clones must not be reachable with the Tab key
+      clone.querySelectorAll('a, button, [tabindex]').forEach((el) => el.setAttribute('tabindex', '-1'));
+      clone.dataset.clone = where;
+      return clone;
+    });
+
+    track.prepend(...makeClones('before'));
+    track.append(...makeClones('after'));
+    track.style.scrollBehavior = 'auto';
+    track.scrollLeft = geometry().start;                // start on the first REAL card
+  }
+
+  function disable() {
+    track.querySelectorAll('[data-clone]').forEach((el) => el.remove());
+    originals = [];
+    track.scrollLeft = 0;
+  }
+
+  const schedule = () => { clearTimeout(timer); timer = setTimeout(recenter, IDLE_MS); };
+
+  track.addEventListener('scroll', schedule, { passive: true });
+  track.addEventListener('touchstart', () => { touching = true; clearTimeout(timer); }, { passive: true });
+  track.addEventListener('touchend', () => { touching = false; schedule(); }, { passive: true });
+  track.addEventListener('touchcancel', () => { touching = false; schedule(); }, { passive: true });
+
+  // Turn the loop on/off when the window crosses 900px (rotating a phone, resizing a browser)
+  mq.addEventListener('change', (event) => (event.matches ? enable() : disable()));
+  if (mq.matches) enable();
+}
+
+// ---- Which rows loop (add more here if you ever need to) ----
+function initTestimonialLoop() { initLoopCarousel('.feedback .testimonials', '.testimonial'); }
+function initServicesLoop()    { initLoopCarousel('.services__grid', '.service-card'); }
+
+
+/* --------------------------------------------------------------------------
+   12. BACK TO TOP BUTTON
+   Appears once a chosen project has scrolled into view, and stays while the
+   visitor is further down the page. Hides again when they scroll back up.
+   -------------------------------------------------------------------------- */
+function initBackToTop() {
+  const button = document.getElementById('back-to-top');
+  const projects = document.querySelectorAll('.work .project');
+  if (!button || projects.length === 0) return;
+
+  // TIP: which project triggers the button (1 = first, 2 = second, 3 = third)
+  const DESKTOP_PROJECT = 2;   // screens 901px and wider
+  const MOBILE_PROJECT = 1;    // screens 900px and below
+  // TIP: 0.75 = show it when the project's top edge rises above 75% of the way down the screen.
+  //      Smaller number = shows later. Bigger number = shows earlier.
+  const TRIGGER = 0.75;
+
+  const desktopQuery = window.matchMedia('(min-width: 901px)');
+  let waiting = false;
+
+  function update() {
+    waiting = false;
+    const number = desktopQuery.matches ? DESKTOP_PROJECT : MOBILE_PROJECT;
+    const target = projects[Math.min(number, projects.length) - 1];
+    const reached = target.getBoundingClientRect().top <= window.innerHeight * TRIGGER;
+    button.classList.toggle('is-shown', reached);
+  }
+
+  // Check at most once per frame while scrolling, so it stays smooth.
+  function onScroll() {
+    if (!waiting) { waiting = true; requestAnimationFrame(update); }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  desktopQuery.addEventListener('change', onScroll);
+
+  button.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    button.blur();
+  });
+
+  update();   // run once in case the page loads already scrolled
+}
+
+/* --------------------------------------------------------------------------
    10. START EVERYTHING
    The script is loaded with "defer", so the HTML is already parsed here.
    -------------------------------------------------------------------------- */
@@ -464,3 +601,6 @@ initCoils();
 initImageFallbacks();
 initPlaceholderLinks();
 initContactForm();
+initTestimonialLoop(); 
+initServicesLoop();
+initBackToTop();
