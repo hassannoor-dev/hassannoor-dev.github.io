@@ -522,7 +522,7 @@ body {
 
 
 .project__splash {
-  position: absolute; z-index: 1;                         /* 0 = behind the screenshot, 1 = on top of it */
+  position: absolute; z-index: 0;                         /* 0 = behind the screenshot, 1 = on top of it */
   top: var(--splash-top, auto);
   left: var(--splash-left, auto);
   right: var(--splash-right, auto);
@@ -550,7 +550,7 @@ body {
 }
 
 .project__frame {
-  position: absolute;
+  position: absolute; z-index: 1;
   left: var(--shot-x, 50%);                      /* horizontal centre of the shot inside the panel */
   top: var(--shot-y, 50%);                       /* vertical centre */
   width: var(--shot-width, 80%);                 /* size, as a % of the panel width (can be over 100%) */
@@ -1074,8 +1074,13 @@ body {
 
   /* Row 1: big tilted shot bleeding off the panel, splash bottom right */
   .shot-1 {
-    --shot-x: 50%; --shot-y: 64%; --shot-width: 100%; --shot-ratio: 4 / 3;
-    --shot-rotate: 7deg; --shot-scale: .86; --shot-radius: 0px;
+   --shot-x: 53%; --shot-y: 53%;
+  --shot-width: 100%;             /* the tilted picture needs to stay a bit smaller than the panel */
+  --shot-ratio: 1573 / 911;      /* your picture's exact shape, so nothing is cropped */
+  --shot-fit: contain;
+  --shot-rotate: -8deg;           /* 0deg = straight */
+  --shot-scale: 1.04;
+  --shot-radius: 0px;
     --splash-left: auto; --splash-right: 0%; --splash-bottom: 0%; --splash-size: 100%;
   }
   /* Row 2: artwork fills the whole panel, splash bottom left */
