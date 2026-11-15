@@ -570,7 +570,13 @@ body {
   object-position: var(--shot-focus, center);    /* which part of the image stays visible when cropped */
   transition: transform .6s ease;
 }
-.project:hover .project__frame img { transform: scale(1.04); }
+.project__frame { transition: scale .6s ease; }      /* the whole frame animates */
+
+.project:hover .project__frame {
+  scale: calc(var(--shot-scale, 1) * var(--hover-zoom, 1.04));   /* 1.04 = grows 4% */
+}
+
+.project:hover .project__frame img { transform: none; }   /* the image no longer zooms on its own */
 
 /* --- Project 1: big tilted shot that bleeds off the panel, like the reference --- */
 .shot-1 {
@@ -1091,8 +1097,13 @@ body {
   }
   /* Row 3: smaller screenshot sitting inside the panel, splash bottom right */
   .shot-3 {
-    --shot-x: 51%; --shot-y: 50%; --shot-width: 79%; --shot-ratio: 17 / 11;
-    --shot-rotate: 0deg; --shot-scale: 1.1; --shot-radius: 0px;
+   --shot-x: 51.3%; --shot-y: 50%;
+  --shot-width: 78%;
+  --shot-ratio: 1757 / 997;
+  --shot-fit: contain;
+  --shot-rotate: -10deg;
+  --shot-scale: 1.23;
+  --shot-radius: 6px;
     --splash-left: auto; --splash-right: 0%; --splash-bottom: 0%; --splash-size: 100%;
   }
 
@@ -1131,9 +1142,13 @@ body {
   }
   .shot-3 {
     --panel-ratio: 16 / 10.5;
-    --shot-x: 50%; --shot-y: 50%;
-    --shot-width: 78%; --shot-ratio: 16 / 10;
-    --shot-rotate: 0deg; --shot-scale: 1.1; --shot-radius: 4px;
+   --shot-x: 50%; --shot-y: 50%;
+  --shot-width: 88%;
+  --shot-ratio: 1757 / 997;
+  --shot-fit: contain;
+  --shot-rotate: 0deg;
+  --shot-scale: 1;
+  --shot-radius: 6px;
     --splash-top: auto; --splash-bottom: 0%;
     --splash-left: auto; --splash-right: -5%;
     --splash-size: 100%; --splash-fade: 1; --splash-rotate: 0deg; --splash-flip: 1;
